@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/Appclient/node_modules
 /.pnp
 .pnp.js
 
