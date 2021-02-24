@@ -1,11 +1,11 @@
 const express = require('express');
 const mongoose = require("mongoose");
 const cors = require("cors");
-
+const path = require("path")
 const Countmodel = require("./model");
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 //Connecting to mongodb atlas db
 mongoose.connect(
@@ -28,7 +28,7 @@ app.use(
   })
 );
 
-//app.use(express.static(path.join(__dirname, "AppClient", "build")))
+app.use(express.static(path.join(__dirname, "AppClient", "build")))
 
 // Routes...................................................
 //GET request to fetch initial state/context of application
@@ -82,9 +82,11 @@ app.put("/item", async (req, res) => {
         console.log(err);
     }
 });
-/*app.get("*", (req, res) => {
+
+
+app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "AppClient", "build", "index.html"));
-});*/
+});
 
 // Start server.............................................
 app.listen(PORT, () => {
