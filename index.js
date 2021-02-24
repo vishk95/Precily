@@ -28,6 +28,7 @@ app.use(
   })
 );
 
+//heroku config
 app.use(express.static(path.join(__dirname, "AppClient", "build")))
 
 // Routes...................................................
@@ -83,7 +84,7 @@ app.put("/item", async (req, res) => {
     }
 });
 
-
+//heroku fallback route
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "AppClient", "build", "index.html"));
 });

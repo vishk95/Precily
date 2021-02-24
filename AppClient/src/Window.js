@@ -1,66 +1,69 @@
-import { Resizable } from "re-resizable";
+import { Resizable } from "re-resizable"; //opensource library for resizable divs
 import React,{useState, useContext} from 'react';
 import {Context} from "./Context";
-import axios from 'axios';
+import axios from 'axios'; //axios to make easy http requests
 
-
+//default style for Reziable component
 const style = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   };
 
-
+//container for all resizable components
 function Window() {
-    const [item, setItem] = useContext(Context);
+    const [item, setItem] = useContext(Context); 
     const [state, setState] = useState({
       text: ""
     })
 
+    //handle input value change
     const handleChange = (e) => {
         setState({
           text: e.target.value
         })
     }
 
+    //Adds new item to list
     const handleAdd = (e) => {
-        e.preventDefault();
+        e.preventDefault(); //prevent submit events default behaviour
         if (!state.text) return;
-        let temp = item.list
+        let temp = item.list; 
         let tempid = temp.length
-        temp.push({
+        temp.push({ //pushing new item object in list
                     name: state.text,
                     id: tempid
                 }) 
-        setItem({
+        setItem({   //setting updated context
             'count': item.count+1,
             'list': [...temp]
         });
-        setState({
+        setState({  //resetting component state
             text: ""
         });
 
-        axios({
+        axios({     //making POST request to add new item at db
             method: 'post',
             url: '/item',
-            data: {
+            data: { //data sent in res object
               name: state.text,
               id: +item.list.length-1,
               count: item.count
             }
-        }, console.log("axios made"));
+        }, console.log("axios POST made"));
     }
 
+    //update existing list item
     const handleUpdate = (id) => {
         const newData = prompt("Enter new name");
         let temp = [...item.list];
         temp[id].name = newData;
-        setItem({
+        setItem({   //updating list
             'count': item.count+1,
             'list': [...temp]
         })
 
-        axios({
+        axios({     //PUT request to edit list item on db
             method: 'put',
             url: '/item',
             data: {
@@ -68,7 +71,7 @@ function Window() {
               id: id,
               count: item.count
             }
-        }, console.log("axios made"));
+        }, console.log("axios PUT made"));
     }
 
     return (
@@ -77,10 +80,15 @@ function Window() {
                 <h1>Count : {item.count}</h1>
             </Resizable>
             <Resizable className="sizable-div" style={style} defaultSize={{width:400, height:350}}>
-                <ul>{(item.list) ? (item.list.map(obj => (
-                    <li key={obj._id}> {obj.name}<button onClick={() => handleUpdate(obj.id)}>UPDATE</button> </li>))
-                    ) : <li></li>
-                }
+                <ul>
+                    {
+                        (item.list) ? 
+                        (item.list.map(obj => (
+                            <li key={obj._id}> {obj.name}
+                                <button onClick={() => handleUpdate(obj.id)}>UPDATE</button>
+                            </li>))
+                        ) : <li></li>
+                    }
                 </ul>
             </Resizable>
             <Resizable className="sizable-div" style={style} defaultSize={{width:800, height:200}}>
