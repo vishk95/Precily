@@ -1,15 +1,16 @@
 const mongoose = require('mongoose');
 
-const Schema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
+//Defining mongodb model and schema
+const CountSchema = new mongoose.Schema({
+    count: {
+        type: Number
     },
-    id: {
-        type: String,
-        required: true,
-    },
-});
+    list: [{
+        name: String,
+        id: Number
+    }]
+})
 
-const List = mongoose.model("List", Schema);
-module.exports = List; 
+const Count = mongoose.model("Count", CountSchema);
+
+module.exports = Count;

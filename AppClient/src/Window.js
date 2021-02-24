@@ -1,6 +1,8 @@
 import { Resizable } from "re-resizable";
 import React,{useState, useContext} from 'react';
-import {Context} from "./Context"
+import {Context} from "./Context";
+import axios from 'axios';
+
 
 const style = {
     display: "flex",
@@ -10,7 +12,7 @@ const style = {
 
 
 function Window() {
-    const [data, setData] = useContext(Context);
+    const [item, setItem] = useContext(Context);
     const [state, setState] = useState({
       text: ""
     })
@@ -24,39 +26,61 @@ function Window() {
     const handleAdd = (e) => {
         e.preventDefault();
         if (!state.text) return;
-        let temp = data.list
+        let temp = item.list
         let tempid = temp.length
         temp.push({
-                    name: state.text+tempid,
+                    name: state.text,
                     id: tempid
                 }) 
-        setData({
-            'count': data.count+1,
+        setItem({
+            'count': item.count+1,
             'list': [...temp]
         });
         setState({
             text: ""
         });
+
+        axios({
+            method: 'post',
+            url: '/item',
+            data: {
+              name: state.text,
+              id: +item.list.length-1,
+              count: item.count
+            }
+        }, console.log("axios made"));
     }
 
     const handleUpdate = (id) => {
         const newData = prompt("Enter new name");
-        let temp = [...data.list];
+        let temp = [...item.list];
         temp[id].name = newData;
-        setData({
-            'count': data.count+1,
+        setItem({
+            'count': item.count+1,
             'list': [...temp]
         })
+
+        axios({
+            method: 'put',
+            url: '/item',
+            data: {
+              name: newData,
+              id: id,
+              count: item.count
+            }
+        }, console.log("axios made"));
     }
 
     return (
         <div className="window">
             <Resizable className="sizable-div" style={style} defaultSize={{width:400, height:350}}>
-                <h1>Count : {data.count}</h1>
+                <h1>Count : {item.count}</h1>
             </Resizable>
             <Resizable className="sizable-div" style={style} defaultSize={{width:400, height:350}}>
-                <ul>{data.list.map(obj => (
-                    <li key={obj.id}> {obj.name}<button onClick={() => handleUpdate(obj.id)}>UPDATE</button> </li>))}
+                <ul>{(item.list) ? (item.list.map(obj => (
+                    <li key={obj._id}> {obj.name}<button onClick={() => handleUpdate(obj.id)}>UPDATE</button> </li>))
+                    ) : <li></li>
+                }
                 </ul>
             </Resizable>
             <Resizable className="sizable-div" style={style} defaultSize={{width:800, height:200}}>

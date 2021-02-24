@@ -5,35 +5,25 @@ export const Context = createContext();
 export const ContextProvider = (props) => {
   
 //To get data from database and save it on client context, so that we have access to whole list right from start
-/*  useEffect(() => {
+  useEffect(() => {
     axios({
       method: "get",
       withCredentials: true,
-      url: "/data"
+      url: "/item"
 
     }).then((res) => {
-      setData(res.data)
+      setItem(res.data);
+      console.log(res.data)
     });
   }, []);
-*/
-  const [data, setData] = React.useState(
-    {
-        'count': 0,
-        'list': [{
-                name: 'first',
-                id: 0
-            },
-            {
-                name: 'second',
-                id: 1
-            }
-        ]
-    }
+
+  const [item, setItem] = React.useState(
+    {}
   );
 
 
   return(
-    <Context.Provider value={[data, setData]}>
+    <Context.Provider value={[item, setItem]}>
       {props.children}
     </Context.Provider>
   );
